@@ -5,3 +5,5 @@ __pycache__/
 output/
 update_mfa_cred.py
 requirements.txt
+test.py
+t_*
