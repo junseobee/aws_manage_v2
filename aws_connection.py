@@ -1,7 +1,29 @@
 import boto3
-import credentials.credentials as credentials
 from aws_account import AwsAccount
 
+
+accounts = {"avon_pci"      : {"arn":"arn:aws:iam::594604260993:role/pci-admin", "name":"pci-session"},
+            "avon_qde"      : {"arn":"arn:aws:iam::984259802673:role/qde-admin", "name":"qde-session"},
+            "avon_npci"     : {"arn":"arn:aws:iam::151100372060:role/npci-admin", "name":"npci-session"},
+            "avon_shrd"     : {"arn":"arn:aws:iam::524593013124:role/shared-admin", "name":"shrd-session"},
+            "avon_dmz"      : {"arn":"arn:aws:iam::881758745010:role/network-admin", "name":"dmz-session"},
+            "avon_log"      : {"arn":"arn:aws:iam::851453209151:role/log-admin", "name":"log-session"},
+            "avon_infra"    : {"arn":"arn:aws:iam::651352415523:role/infra-admin", "name":"infra-session"},
+            "avon_nonprod"  : {"arn":"arn:aws:iam::295326379942:role/nonprod-admin", "name":"nonprod-session"},
+            "avon_prod"     : {"arn":"arn:aws:iam::496688516476:role/prod-admin", "name":"prod-session"}
+            }
+
+accounts_viewoly = {
+            "avon_pci"      : {"arn":"arn:aws:iam::594604260993:role/pci-viewonly", "name":"pci-session"},
+            "avon_qde"      : {"arn":"arn:aws:iam::984259802673:role/qde-viewonly", "name":"qde-session"},
+            "avon_npci"     : {"arn":"arn:aws:iam::151100372060:role/npci-viewonly", "name":"npci-session"},
+            "avon_shrd"     : {"arn":"arn:aws:iam::524593013124:role/shared-viewonly", "name":"shrd-session"},
+            "avon_dmz"      : {"arn":"arn:aws:iam::881758745010:role/network-viewonly", "name":"dmz-session"},
+            "avon_log"      : {"arn":"arn:aws:iam::851453209151:role/log-viewonly", "name":"log-session"},
+            "avon_infra"    : {"arn":"arn:aws:iam::651352415523:role/avon-infra-viewonly", "name":"infra-session"},
+            "avon_nonprod"  : {"arn":"arn:aws:iam::295326379942:role/avon-nonprod-viewonly", "name":"nonprod-session"},
+            "avon_prod"     : {"arn":"arn:aws:iam::496688516476:role/avon-prod-viewonly", "name":"prod-session"}
+            }
 
 topic_arns = {
     "avon_pci": "arn:aws:sns:us-east-1:594604260993:SNS-SNOW-CRITICAL-ECOM-PROD-ALARM",
@@ -39,7 +61,7 @@ def switch_session(assume_role):
 
 
 def account_service(account_name, service_name, region="us-east-1"):
-    role = credentials.accounts[account_name]
+    role = accounts[account_name]
     assume_role = make_session(role)
     switch_role_sess = switch_session(assume_role)
     aws_service = switch_role_sess.client(service_name=service_name, region_name=region)

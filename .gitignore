@@ -3,7 +3,5 @@ credentials/
 __pycache__/
 .vscode/
 output/
-update_mfa_cred.py
 requirements.txt
-test.py
-t_*
+test_code/
