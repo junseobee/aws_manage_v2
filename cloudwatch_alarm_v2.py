@@ -92,14 +92,14 @@ def set_cloudwatch_alarm(objects):
                 # It would be better to be concise, but the names are following the naming rule.
                 if metric["MetricName"] == "CPUUtilization":
                     metric["alarm_name"] = f"CRITICAL-{instance_name}-CPU-{instance_id}"
-                    metric["alarm_description"] = f"Critical CPU Alarm Setting for {instance_name}"
+                    metric["alarm_description"] = f"{instance_name} - {instance_id} - High CPU Utilization {cpu_threshold}%"
                     metric["comparison_operator"] = gte_operator
                     metric["threshold"] = cpu_threshold
                     metric["period"] = cpu_period
                     put_cw_alarm(cw_client, metric)
                 elif metric["MetricName"] == "StatusCheckFailed":
                     metric["alarm_name"] = f"CRITICAL-{instance_name}-STATUS-{instance_id}"
-                    metric["alarm_description"] = f"Critical STATUS Alarm Setting for {instance_name}"
+                    metric["alarm_description"] = f"{instance_name} - {instance_id} - STATUS Alarm"
                     metric["comparison_operator"] = gte_operator
                     metric["threshold"] = status_threshold
                     metric["period"] = status_period
@@ -111,7 +111,7 @@ def set_cloudwatch_alarm(objects):
                     device = [ item["Value"] for item in metric["Dimensions"] if item["Name"] == "device" ]
                     if len(device) == 1:
                         metric["alarm_name"] = f"CRITICAL-{instance_name}-DISK-{instance_id}-{device[0]}"
-                    metric["alarm_description"] = f"Critical DISK Alarm Setting for {instance_name} {device[0]}"
+                    metric["alarm_description"] = f"{instance_name} - {instance_id} - High Disk {device[0]} Usage {disk_linux_threshold}%"
                     metric["comparison_operator"] = gte_operator
                     metric["threshold"] = disk_linux_threshold
                     metric["period"] = disk_linux_period
@@ -121,21 +121,21 @@ def set_cloudwatch_alarm(objects):
                     if len(device) == 1:
                         drive = device[0].replace(":", "")
                         metric["alarm_name"] = f"CRITICAL-{instance_name}-DISK-{instance_id}-{drive}"
-                    metric["alarm_description"] = f"Critical DISK Alarm Setting for {instance_name} {drive}"
+                    metric["alarm_description"] = f"{instance_name} - {instance_id} - Low Disk {drive} Free space {disk_win_threshold}%"
                     metric["comparison_operator"] = lte_operator
                     metric["threshold"] = disk_win_threshold
                     metric["period"] = disk_win_period
                     put_cw_alarm(cw_client, metric)
                 elif metric["MetricName"] == "mem_used_percent":
                     metric["alarm_name"] = f"CRITICAL-{instance_name}-MEMORY-{instance_id}"
-                    metric["alarm_description"] = f"Critical CPU Alarm Setting for {instance_name}"
+                    metric["alarm_description"] = f"{instance_name} - {instance_id} - High Memory Usage {memory_linux_threshold}%"
                     metric["comparison_operator"] = gte_operator
                     metric["threshold"] = memory_linux_threshold
                     metric["period"] = memory_linux_period
                     put_cw_alarm(cw_client, metric)
                 elif metric["MetricName"] == "Memory Available MBytes":
                     metric["alarm_name"] = f"CRITICAL-{instance_name}-MEMORY-{instance_id}"
-                    metric["alarm_description"] = f"Critical MEMORY Alarm Setting for {instance_name}"
+                    metric["alarm_description"] = f"{instance_name} - {instance_id} - High Memory Usage {memory_win_threshold}%"
                     metric["comparison_operator"] = lte_operator
                     metric["threshold"] = memory_win_threshold
                     metric["period"] = memory_win_period

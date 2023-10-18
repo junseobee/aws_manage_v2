@@ -2,15 +2,16 @@ import boto3
 from aws_account import AwsAccount
 
 
-accounts = {"avon_pci"      : {"arn":"arn:aws:iam::594604260993:role/pci-admin", "name":"pci-session"},
-            "avon_qde"      : {"arn":"arn:aws:iam::984259802673:role/qde-admin", "name":"qde-session"},
-            "avon_npci"     : {"arn":"arn:aws:iam::151100372060:role/npci-admin", "name":"npci-session"},
-            "avon_shrd"     : {"arn":"arn:aws:iam::524593013124:role/shared-admin", "name":"shrd-session"},
-            "avon_dmz"      : {"arn":"arn:aws:iam::881758745010:role/network-admin", "name":"dmz-session"},
-            "avon_log"      : {"arn":"arn:aws:iam::851453209151:role/log-admin", "name":"log-session"},
-            "avon_infra"    : {"arn":"arn:aws:iam::651352415523:role/infra-admin", "name":"infra-session"},
-            "avon_nonprod"  : {"arn":"arn:aws:iam::295326379942:role/nonprod-admin", "name":"nonprod-session"},
-            "avon_prod"     : {"arn":"arn:aws:iam::496688516476:role/prod-admin", "name":"prod-session"}
+accounts = {"avon_pci"      : {"arn":"arn:aws:iam::594604260993:role/pci-admin", "name":"pci-session", "profile":"mfa"},
+            "avon_qde"      : {"arn":"arn:aws:iam::984259802673:role/qde-admin", "name":"qde-session", "profile":"mfa"},
+            "avon_npci"     : {"arn":"arn:aws:iam::151100372060:role/npci-admin", "name":"npci-session", "profile":"mfa"},
+            "avon_shrd"     : {"arn":"arn:aws:iam::524593013124:role/shared-admin", "name":"shrd-session", "profile":"mfa"},
+            "avon_dmz"      : {"arn":"arn:aws:iam::881758745010:role/network-admin", "name":"dmz-session", "profile":"mfa"},
+            "avon_log"      : {"arn":"arn:aws:iam::851453209151:role/log-admin", "name":"log-session", "profile":"mfa"},
+            "avon_infra"    : {"arn":"arn:aws:iam::651352415523:role/infra-admin", "name":"infra-session", "profile":"mfa"},
+            "avon_nonprod"  : {"arn":"arn:aws:iam::295326379942:role/nonprod-admin", "name":"nonprod-session", "profile":"mfa"},
+            "avon_prod"     : {"arn":"arn:aws:iam::496688516476:role/prod-admin", "name":"prod-session", "profile":"mfa"},
+            "mzc_acct": {"arn": "arn:aws:iam::420194459472:role/admin-role", "name":"mzc-session", "profile":"my-aws"}
             }
 
 accounts_viewoly = {
@@ -33,19 +34,21 @@ topic_arns = {
     "avon_dmz": "arn:aws:sns:us-east-1:881758745010:SNS-SNOW-CRITICAL-DMZ",
     "avon_infra": "arn:aws:sns:us-east-1:651352415523:SNS-SNOW-CRITICA-INFRA",
     "avon_nonprod": "arn:aws:sns:us-east-1:295326379942:SNS-SNOW-CRITICAL-NONPROD",
-    "avon_prod": "arn:aws:sns:us-east-1:496688516476:SNS-SNOW-CRITICAL-PROD"
+    "avon_prod": "arn:aws:sns:us-east-1:496688516476:SNS-SNOW-CRITICAL-PROD",
+    "mzc_acct": "arn:aws:sns:us-east-1:420194459472:SNS-ALARM"
 }
 
 
 # make aws console session by view-only role using mzcread user
 def make_session(role):
-    mzcread_sess = boto3.session.Session(profile_name="mfa")
+    # Profile will be set from the accounts dic which is predefined as a profile key.
+    profile_session = boto3.session.Session(profile_name=role["profile"])
 
-    sts = mzcread_sess.client("sts")
+    sts = profile_session.client("sts")
     # response = switch_role(credentials."avon_qde)
     response = sts.assume_role(
-        RoleArn=role['arn'],
-        RoleSessionName=role['name']
+        RoleArn=role["arn"],
+        RoleSessionName=role["name"]
     )
 
     return response
