@@ -12,9 +12,9 @@ accounts = ["avon_pci", "avon_npci", "avon_shrd", "avon_qde", "avon_dmz"]
 # CRITICAL-EC2LP-MDWDB01-DISK-i-0a177cf72eb932828-mapper/oradatavg-cacdwlv
 # The alarm's threshold has been modified to 93 from 90.
 
-single_account = "avon_infra"
-single_instance_id = "i-0aa74e3c8cd1d880c"
-
+single_account = "avon_pci"
+# You can set an alarm or alarms in an aws account.
+instance_ids = ["i-037ca96836068da8a"]
 
 
 if __name__ == "__main__":
@@ -32,9 +32,11 @@ if __name__ == "__main__":
 
         set_cloudwatch_alarm(account_objects)
     else:
-        # Update alarms for single account
-        instance = (single_account, single_instance_id) # tuple for account and instance id
+        for instance_id in instance_ids:
+            
+            # Update alarms for single account
+            instance = (single_account, instance_id) # tuple for account and instance id
 
-        account_objects = get_ec2_instance(instance)
-        set_cloudwatch_alarm(account_objects)
+            account_objects = get_ec2_instance(instance)
+            set_cloudwatch_alarm(account_objects)
     
