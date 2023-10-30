@@ -68,6 +68,7 @@ def account_service(account_name, service_name, region="us-east-1"):
     assume_role = make_session(role)
     switch_role_sess = switch_session(assume_role)
     aws_service = switch_role_sess.client(service_name=service_name, region_name=region)
-    account_object = AwsAccount(account_name, aws_service)
-    return account_object
+    # don't need the object to use the client like cw, ssm, but just use the client directly
+    # account_object = AwsAccount(account_name, aws_service)
+    return aws_service
 
